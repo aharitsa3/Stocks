@@ -21,3 +21,11 @@ a <- processStream(df$AAPL.Adjusted,cpmType = 'Kolmogorov-Smirnov')
 df %>% 
   filter(row_number() %in% a[["detectionTimes"]]) %>%
   View()
+
+df <- df %>%
+  mutate(rownum = row_number())
+
+changepoints <- data.frame(rownum = a[['detectionTimes']])
+
+df %>%
+  merge(changepoints,by=rownum)
