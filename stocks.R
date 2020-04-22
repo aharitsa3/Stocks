@@ -2,6 +2,7 @@ library(tidyquant)
 library(dplyr)
 library(ggplot2)
 library(xts)
+library(cpm)
 
 
 for (stock in c('AAPL','MSFT','SBUX','GOOG')){
@@ -13,4 +14,10 @@ for (stock in c('AAPL','MSFT','SBUX','GOOG')){
 #   geom_line(data = AAPL, aes(index(AAPL),AAPL.Adjusted,col='red')) +
 #   geom_line(data = SBUX, aes(index(SBUX),SBUX.Adjusted,col='green'))
 
+df <- data.frame(date=index(AAPL),coredata(AAPL))
+a <- processStream(df$AAPL.Adjusted,cpmType = 'Kolmogorov-Smirnov')
 
+# get detection points
+df %>% 
+  filter(row_number() %in% a[["detectionTimes"]]) %>%
+  View()
